@@ -213,6 +213,17 @@ def BlueSideButton():
     brain.screen.set_cursor(6,16)
     brain.screen.print("Blue")
 
+def SampleAuto():
+    brain.screen.set_font(FontType.MONO20)
+    brain.screen.set_pen_color(Color.BLACK)
+    brain.screen.set_fill_color(Color.BLUE)
+    brain.screen.set_pen_width(2)
+    brain.screen.draw_rectangle(120, 90, 100, 60)
+    brain.screen.set_cursor(6,16)
+    brain.screen.print("Sample Auto\n This Auto is not color Specific")
+
+    
+
 def CalibrateInternal():
     pass
 
@@ -275,6 +286,7 @@ while True:
             MainMenuButton()
             BlueSideButton()
             RedSideButton()
+
 
         LastGui = Gui
 
