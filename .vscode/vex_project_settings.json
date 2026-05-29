@@ -1,0 +1,18 @@
+{
+	"project": {
+		"name": "5842Wv2",
+		"slot": 1,
+		"description": "The Code for vex team 5842w 20206",
+		"platform": "V5",
+		"creationDate": "Fri, 29 May 2026 02:33:46 GMT",
+		"language": "python",
+		"python": {
+			"main": "\\src\\main.py"
+		},
+		"sdkVersion": "V5_1_0_1_25"
+	},
+	"extension": {
+		"version": "0.8.2026020401",
+		"json": 1
+	}
+}
