@@ -222,7 +222,20 @@ def SampleAuto():
     brain.screen.set_cursor(6,16)
     brain.screen.print("Sample Auto\n This Auto is not color Specific")
 
-    
+def explode():
+    brain.screen.clear_screen(Color.BLACK)
+    brain.screen.set_cursor(8,8)
+    brain.screen.print("THIS ROBOT WILL EXPLODE")
+    explodee = 1
+    if explodee == 1:
+        while True:
+            drivetrain.drive(FORWARD)
+            drivetrain.drive(REVERSE)
+            drivetrain.drive(FORWARD)
+            drivetrain.drive(REVERSE)
+            drivetrain.drive(FORWARD)
+            drivetrain.drive(REVERSE)
+            
 
 def CalibrateInternal():
     pass
