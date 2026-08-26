@@ -134,8 +134,18 @@ batery_level = brain.battery.capacity()
 disabled = False
 last_l1 = False
 
+def disable():
+    global disabled, last_l1
 
+    l1 = controller_1.buttonL1.pressing()
 
+    if l1 and not last_l1:
+        disabled = not disabled
+
+    last_l1 = l1
+
+    if disabled:
+        drivetrain.stop()
 if batery_level < 20:
     controller_1.rumble(".-")
 
@@ -230,6 +240,9 @@ def BlueSideButton():
     brain.screen.set_cursor(6,16)
     brain.screen.print("Blue")
 
+
+
+
 def SampleAuto():
     brain.screen.set_font(FontType.MONO20)
     brain.screen.set_pen_color(Color.BLACK)
@@ -239,20 +252,15 @@ def SampleAuto():
     brain.screen.set_cursor(6,16)
     brain.screen.print("Sample Auto\n This Auto is not color Specific")
 
-def explode():
-    brain.screen.clear_screen(Color.BLACK)
-    brain.screen.set_cursor(8,8)
-    brain.screen.print("THIS ROBOT WILL EXPLODE")
-    explodee = 1
-    if explodee == 1:
-        while True:
-            drivetrain.drive(FORWARD)
-            drivetrain.drive(REVERSE)
-            drivetrain.drive(FORWARD)
-            drivetrain.drive(REVERSE)
-            drivetrain.drive(FORWARD)
-            drivetrain.drive(REVERSE)
-            
+
+def tstats():
+    brain.screen.set_font(FontType.MONO20)
+    brain.screen.set_cursor(6,16)
+    while True:
+        temp = drivetrain.temperature(PERCENT)
+        brain.screen.print("Temp:", temp)
+        brain.screen.clear_row(6)
+        wait(2 ,SECONDS)
 
 def CalibrateInternal():
     pass
@@ -277,6 +285,13 @@ Gui = "MainMenu"
 LastGui = ""
 
 while True:
+    disable()
+    wait(20, MSEC)
+
+    
+
+    
+
 
     if Gui != LastGui:
         brain.screen.clear_screen()
@@ -294,6 +309,7 @@ while True:
             brain.screen.print("Main Menu")
             AutoSelectorButton()
             SetingsButton()
+            tstats()
 
         elif Gui == "SettingsMenu":
             controller_1.screen.set_cursor(1, 1)
@@ -344,6 +360,10 @@ while True:
    
 controller_1.buttonA.pressed(AutoAlign)
 
+
+
+
+
 #Game Stuff
 def pre_autonomous():
     controller_1.buttonA.pressed(AutoAlign)
@@ -355,7 +375,6 @@ def autonmous():
 autonmous()
  
 def driver_control(): 
-
     controller_1.buttonA.pressed(AutoAlign)
 
 driver_control()
