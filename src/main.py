@@ -16,6 +16,7 @@ right_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.19, 295, 40, MM, 1)
 inertial_1 = Inertial(Ports.PORT1)
+optical_5 = Optical(Ports.PORT5)
 
 
 # wait for rotation sensor to fully initialize
@@ -31,6 +32,30 @@ def initializeRandomSeed():
 # Set random seed 
 initializeRandomSeed()
 
+
+# Color to String Helper
+def convert_color_to_string(col):
+    if col == Color.RED:
+        return "red"
+    if col == Color.GREEN:
+        return "green"
+    if col == Color.BLUE:
+        return "blue"
+    if col == Color.WHITE:
+        return "white"
+    if col == Color.YELLOW:
+        return "yellow"
+    if col == Color.ORANGE:
+        return "orange"
+    if col == Color.PURPLE:
+        return "purple"
+    if col == Color.CYAN:
+        return "cyan"
+    if col == Color.BLACK:
+        return "black"
+    if col == Color.TRANSPARENT:
+        return "transparent"
+    return ""
 
 def play_vexcode_sound(sound_name):
     # Helper to make playing sounds from the V5 in VEXcode easier and
@@ -105,21 +130,17 @@ remote_control_code_enabled = True
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 #endregion VEXcode Generated Robot Configuration
-
 batery_level = brain.battery.capacity()
-
 disabled = False
+last_l1 = False
 
-
-while disabled == True :
-    remote_control_code_enabled = True
 
 
 if batery_level < 20:
-    controller_1.rumble("..-----")
+    controller_1.rumble(".-")
 
 if batery_level < 10:
-    controller_1.rumble("...----")
+    controller_1.rumble("..-")
 
 
 def closest90(angle):
@@ -334,8 +355,6 @@ def autonmous():
 autonmous()
  
 def driver_control(): 
-
-   
 
     controller_1.buttonA.pressed(AutoAlign)
 
