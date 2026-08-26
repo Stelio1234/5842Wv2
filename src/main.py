@@ -7,19 +7,15 @@ import math
 brain=Brain()
 
 # Robot configuration code
-left_motor_a = Motor(Ports.PORT10, GearSetting.RATIO_18_1, True)
-left_motor_b = Motor(Ports.PORT20, GearSetting.RATIO_18_1, True)
+left_motor_a = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
+left_motor_b = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
-right_motor_a = Motor(Ports.PORT9, GearSetting.RATIO_18_1, False)
-right_motor_b = Motor(Ports.PORT11, GearSetting.RATIO_18_1, False)
+right_motor_a = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
+right_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
-drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 219.44, 295, 40, MM, 5)
-inertial_19 = Inertial(Ports.PORT19)
+drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.19, 295, 40, MM, 1)
 controller_1 = Controller(PRIMARY)
-# AI Vision Color Descriptions
-# AI Vision Code Descriptions
-ai_vision_21 = AiVision(Ports.PORT21, AiVision.ALL_TAGS)
-range_finder_g = Sonar(brain.three_wire_port.g)
+inertial_1 = Inertial(Ports.PORT1)
 
 
 # wait for rotation sensor to fully initialize
@@ -132,7 +128,7 @@ def closest90(angle):
 
 def turnTo(tagetangle):
     while True:
-        currentAngle = inertial_19.rotation(DEGREES)
+        currentAngle = inertial_1.rotation(DEGREES)
         notangle = tagetangle - currentAngle
         controller_1.screen.clear_line(1)
         controller_1.screen.set_cursor(1, 1)
@@ -163,7 +159,7 @@ def turnTo(tagetangle):
 
 
 def AutoAlign():
-    current = inertial_19.rotation(DEGREES)
+    current = inertial_1.rotation(DEGREES)
     target = closest90(current)
     turnTo(target)
 
@@ -240,15 +236,15 @@ def explode():
 def CalibrateInternal():
     pass
 
-def getrange():
-    range_finder_g.found_object() 
+#def getrange():
+    #ange_finder_g.found_object() 
     
-    while True:
-        distance = range_finder_g.distance(INCHES)
-        brain.screen.clear_line(6) 
-        brain.screen.set_cursor(6, 7)
-        brain.screen.print(str(round(distance)))
-        wait(60, MSEC)
+    #while True:
+        #istance = range_finder_g.distance(INCHES)
+        #brain.screen.clear_line(6) 
+        #brain.screen.set_cursor(6, 7)
+        #brain.screen.print(str(round(distance)))
+        #wait(60, MSEC)
 
 #Autos
 def Auto1():
@@ -344,4 +340,3 @@ def driver_control():
     controller_1.buttonA.pressed(AutoAlign)
 
 driver_control()
-
