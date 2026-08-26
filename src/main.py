@@ -7,14 +7,14 @@ import math
 brain=Brain()
 
 # Robot configuration code
+controller_1 = Controller(PRIMARY)
 left_motor_a = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
-left_motor_b = Motor(Ports.PORT8, GearSetting.RATIO_18_1, True)
+left_motor_b = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
 right_motor_a = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
 right_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.19, 295, 40, MM, 1)
-controller_1 = Controller(PRIMARY)
 inertial_1 = Inertial(Ports.PORT1)
 
 
