@@ -8,15 +8,14 @@ brain=Brain()
 
 # Robot configuration code
 controller_1 = Controller(PRIMARY)
-left_motor_a = Motor(Ports.PORT9, GearSetting.RATIO_18_1, True)
-left_motor_b = Motor(Ports.PORT7, GearSetting.RATIO_18_1, True)
+left_motor_a = Motor(Ports.PORT2, GearSetting.RATIO_18_1, True)
+left_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, True)
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b)
-right_motor_a = Motor(Ports.PORT2, GearSetting.RATIO_18_1, False)
-right_motor_b = Motor(Ports.PORT3, GearSetting.RATIO_18_1, False)
+right_motor_a = Motor(Ports.PORT7, GearSetting.RATIO_18_1, False)
+right_motor_b = Motor(Ports.PORT6, GearSetting.RATIO_18_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b)
-drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 319.19, 295, 40, MM, 1)
-inertial_1 = Inertial(Ports.PORT1)
-optical_5 = Optical(Ports.PORT5)
+drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 219.44, 295, 40, MM, 1.6666666666666667)
+Internal_Sensor = Inertial(Ports.PORT1)
 
 
 # wait for rotation sensor to fully initialize
@@ -32,30 +31,6 @@ def initializeRandomSeed():
 # Set random seed 
 initializeRandomSeed()
 
-
-# Color to String Helper
-def convert_color_to_string(col):
-    if col == Color.RED:
-        return "red"
-    if col == Color.GREEN:
-        return "green"
-    if col == Color.BLUE:
-        return "blue"
-    if col == Color.WHITE:
-        return "white"
-    if col == Color.YELLOW:
-        return "yellow"
-    if col == Color.ORANGE:
-        return "orange"
-    if col == Color.PURPLE:
-        return "purple"
-    if col == Color.CYAN:
-        return "cyan"
-    if col == Color.BLACK:
-        return "black"
-    if col == Color.TRANSPARENT:
-        return "transparent"
-    return ""
 
 def play_vexcode_sound(sound_name):
     # Helper to make playing sounds from the V5 in VEXcode easier and
@@ -130,36 +105,30 @@ remote_control_code_enabled = True
 rc_auto_loop_thread_controller_1 = Thread(rc_auto_loop_function_controller_1)
 
 #endregion VEXcode Generated Robot Configuration
+
 batery_level = brain.battery.capacity()
+
 disabled = False
-last_l1 = False
 
-def disable():
-    global disabled, last_l1
 
-    l1 = controller_1.buttonL1.pressing()
+while disabled == True :
+    remote_control_code_enabled = True
 
-    if l1 and not last_l1:
-        disabled = not disabled
 
-    last_l1 = l1
-
-    if disabled:
-        drivetrain.stop()
 if batery_level < 20:
-    controller_1.rumble(".-")
+    controller_1.rumble("..-----")
 
 if batery_level < 10:
-    controller_1.rumble("..-")
+    controller_1.rumble("...--- -")
 
-
+# Robot Actions
 def closest90(angle):
     return round(angle / 90) * 90
 
 
 def turnTo(tagetangle):
     while True:
-        currentAngle = inertial_1.rotation(DEGREES)
+        currentAngle = Internal_Sensor.rotation(DEGREES)
         notangle = tagetangle - currentAngle
         controller_1.screen.clear_line(1)
         controller_1.screen.set_cursor(1, 1)
@@ -190,58 +159,14 @@ def turnTo(tagetangle):
 
 
 def AutoAlign():
-    current = inertial_1.rotation(DEGREES)
+    current = Internal_Sensor.rotation(DEGREES)
     target = closest90(current)
     turnTo(target)
 
-#Buttons
-def SetingsButton():
-    brain.screen.set_cursor(3, 5)
-    brain.screen.set_fill_color(Color.WHITE)
-    brain.screen.set_font(FontType.MONO12)
-    brain.screen.set_pen_color(Color.BLACK)
-    brain.screen.set_pen_width(2)
-    brain.screen.draw_rectangle(1, 1, 100, 60)
-    brain.screen.print("Settings")
-
-def AutoSelectorButton():
-    brain.screen.set_font(FontType.MONO12)
-    brain.screen.set_pen_color(Color.BLACK)
-    brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.set_pen_width(2)
-    brain.screen.draw_rectangle(1, 178, 100, 60)
-    brain.screen.set_cursor(18,3)
-    brain.screen.print("Auto Selector")
-    
-def MainMenuButton():
-    brain.screen.set_font(FontType.MONO12)
-    brain.screen.set_pen_color(Color.BLACK)
-    brain.screen.set_fill_color(Color.RED)
-    brain.screen.set_pen_width(2)
-    brain.screen.draw_rectangle(1, 178, 100, 60)
-    brain.screen.set_cursor(18,3)
-    brain.screen.print("Main Menu")
-
-def RedSideButton():
-    brain.screen.set_font(FontType.MONO20)
-    brain.screen.set_pen_color(Color.BLACK)
-    brain.screen.set_fill_color(Color.RED)
-    brain.screen.set_pen_width(2)
-    brain.screen.draw_rectangle(120, 150, 100, 60)
-    brain.screen.set_cursor(10,16)
-    brain.screen.print("Red")
-
-def BlueSideButton():
-    brain.screen.set_font(FontType.MONO20)
-    brain.screen.set_pen_color(Color.BLACK)
-    brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.set_pen_width(2)
-    brain.screen.draw_rectangle(120, 90, 100, 60)
-    brain.screen.set_cursor(6,16)
-    brain.screen.print("Blue")
 
 
 
+#Random Crap
 
 def SampleAuto():
     brain.screen.set_font(FontType.MONO20)
@@ -253,121 +178,384 @@ def SampleAuto():
     brain.screen.print("Sample Auto\n This Auto is not color Specific")
 
 
-def tstats():
-    brain.screen.set_font(FontType.MONO20)
-    brain.screen.set_cursor(6,16)
-    while True:
-        temp = drivetrain.temperature(PERCENT)
-        brain.screen.print("Temp:", temp)
-        brain.screen.clear_row(6)
-        wait(2 ,SECONDS)
+            
 
 def CalibrateInternal():
     pass
 
-#def getrange():
-    #ange_finder_g.found_object() 
-    
-    #while True:
-        #istance = range_finder_g.distance(INCHES)
-        #brain.screen.clear_line(6) 
-        #brain.screen.set_cursor(6, 7)
-        #brain.screen.print(str(round(distance)))
-        #wait(60, MSEC)
 
-#Autos
-def Auto1():
-    drivetrain.drive_for(FORWARD, 200, MM)
+
 #Menus
 
-#Custom GUI's
 Gui = "MainMenu"
 LastGui = ""
 
+auto_side = "Blue"
+auto_mode = "Match"
+drive_speed = 100
+drive_reverse = False
+
+
+def button(x, y, w, h, name):
+
+    brain.screen.set_fill_color(Color.BLACK)
+    brain.screen.set_pen_color(Color.WHITE)
+    brain.screen.set_pen_width(2)
+    brain.screen.draw_rectangle(x, y, w, h)
+
+    brain.screen.set_font(FontType.MONO15)
+    brain.screen.set_pen_color(Color.WHITE)
+    brain.screen.print_at(name, x=x + 15, y=y + 27)
+
+
+def MainMenuButton():
+
+    button(15, 195, 100, 30, "Back")
+
+
+def AutoSelectorButton():
+
+    button(20, 55, 200, 50, "Auto")
+
+
+def SetingsButton():
+
+    button(260, 55, 200, 50, "Settings")
+
+
+def FieldButton():
+
+    button(20, 120, 200, 50, "Field")
+
+
+def InfoButton():
+
+    button(260, 120, 200, 50, "Info")
+
+
+def BlueSideButton():
+
+    if auto_side == "Blue":
+        brain.screen.set_fill_color(Color.BLUE)
+    else:
+        brain.screen.set_fill_color(Color.BLACK)
+
+    brain.screen.set_pen_color(Color.WHITE)
+    brain.screen.draw_rectangle(20, 55, 200, 50)
+
+    brain.screen.set_font(FontType.MONO15)
+    brain.screen.print_at("Blue", x=90, y=82)
+
+
+def RedSideButton():
+
+    if auto_side == "Red":
+        brain.screen.set_fill_color(Color.RED)
+    else:
+        brain.screen.set_fill_color(Color.BLACK)
+
+    brain.screen.set_pen_color(Color.WHITE)
+    brain.screen.draw_rectangle(260, 55, 200, 50)
+
+    brain.screen.set_font(FontType.MONO15)
+    brain.screen.print_at("Red", x=330, y=82)
+
+
+    
+        
+
+
 while True:
-    disable()
-    wait(20, MSEC)
 
+#disable Robot
     
 
-    
 
 
     if Gui != LastGui:
+
         brain.screen.clear_screen()
         controller_1.screen.clear_row(1)
-       #Gui Menues
+
         if Gui == "MainMenu":
+
             disabled = False
+
             controller_1.buttonA.pressed(AutoAlign)
+
             controller_1.screen.set_cursor(1, 1)
             controller_1.screen.print("Driving Enabled")
+
             brain.screen.set_font(FontType.MONO30)
             brain.screen.set_fill_color(Color.BLACK)
             brain.screen.set_pen_color(Color.WHITE)
-            brain.screen.set_cursor(1 ,15)
-            brain.screen.print("Main Menu")
+
+            brain.screen.print_at("Main Menu", x=170, y=30)
+
             AutoSelectorButton()
             SetingsButton()
-            tstats()
+            FieldButton()
+            InfoButton()
 
         elif Gui == "SettingsMenu":
+
             controller_1.screen.set_cursor(1, 1)
             controller_1.screen.print("Driving Disabled")
+
             brain.screen.set_font(FontType.MONO30)
-            brain.screen.set_pen_color(Color.WHITE)
             brain.screen.set_fill_color(Color.BLACK)
-            brain.screen.set_cursor(1 ,15)
-            brain.screen.print("Settings")
+            brain.screen.set_pen_color(Color.WHITE)
+
+            brain.screen.print_at("Settings", x=175, y=30)
+
+            brain.screen.set_font(FontType.MONO15)
+
+            brain.screen.print_at(
+                "Speed: " + str(drive_speed) + "%",
+                x=20,
+                y=65
+            )
+
+            button(20, 80, 100, 35, "50%")
+            button(135, 80, 100, 35, "75%")
+            button(250, 80, 100, 35, "100%")
+
+            
+
             MainMenuButton()
 
         elif Gui == "AutoSelector":
+
             controller_1.screen.set_cursor(1, 1)
             controller_1.screen.print("Driving Disabled")
+
             brain.screen.set_font(FontType.MONO30)
             brain.screen.set_fill_color(Color.BLACK)
             brain.screen.set_pen_color(Color.WHITE)
-            brain.screen.set_cursor(1 ,1)
-            brain.screen.print("Auto Selector")
-            MainMenuButton()
+
+            brain.screen.print_at("Auto Selector", x=125, y=30)
+
             BlueSideButton()
             RedSideButton()
 
+            brain.screen.set_font(FontType.MONO15)
+
+            brain.screen.print_at(
+                "Side: " + auto_side,
+                x=20,
+                y=140
+            )
+
+            brain.screen.print_at(
+                "Mode: " + auto_mode,
+                x=20,
+                y=165
+            )
+
+            MainMenuButton()
+
+        elif Gui == "FieldMap":
+
+            controller_1.screen.set_cursor(1, 1)
+            controller_1.screen.print("Driving Disabled")
+
+            brain.screen.set_font(FontType.MONO30)
+            brain.screen.set_fill_color(Color.BLACK)
+            brain.screen.set_pen_color(Color.WHITE)
+
+            brain.screen.print_at("Override", x=175, y=30)
+
+            # Field
+
+            brain.screen.set_pen_width(2)
+            brain.screen.set_pen_color(Color.WHITE)
+            brain.screen.set_fill_color(Color.BLACK)
+
+            brain.screen.draw_rectangle(75, 50, 330, 140)
+
+            # Center
+
+            brain.screen.draw_line(240, 50, 320, 120)
+            brain.screen.draw_line(320, 120, 240, 190)
+            brain.screen.draw_line(240, 190, 160, 120)
+            brain.screen.draw_line(160, 120, 240, 50)
+
+            # Midfield lines
+
+            brain.screen.draw_line(75, 120, 160, 120)
+            brain.screen.draw_line(320, 120, 405, 120)
+
+            # Corner
+
+            brain.screen.set_fill_color(Color.BLUE)
+            brain.screen.draw_rectangle(80, 55, 45, 25)
+
+            brain.screen.set_fill_color(Color.RED)
+            brain.screen.draw_rectangle(355, 55, 45, 25)
+
+            brain.screen.set_fill_color(Color.BLUE)
+            brain.screen.draw_rectangle(80, 160, 45, 25)
+
+            brain.screen.set_fill_color(Color.RED)
+            brain.screen.draw_rectangle(355, 160, 45, 25)
+
+            # Robot
+
+            brain.screen.set_fill_color(Color.WHITE)
+            brain.screen.set_pen_color(Color.WHITE)
+            brain.screen.draw_circle(240, 120, 7)
+
+            MainMenuButton()
+
+        elif Gui == "InfoMenu":
+
+            controller_1.screen.set_cursor(1, 1)
+            controller_1.screen.print("Driving Disabled")
+
+            brain.screen.set_font(FontType.MONO30)
+            brain.screen.set_fill_color(Color.BLACK)
+            brain.screen.set_pen_color(Color.WHITE)
+
+            brain.screen.print_at("Robot Info", x=150, y=30)
+
+            brain.screen.set_font(FontType.MONO15)
+
+            brain.screen.print_at(
+                "Battery: " +
+                str(round(brain.battery.capacity(), 0)) +
+                "%",
+                x=20,
+                y=70
+            )
+
+            brain.screen.print_at(
+                "Temp: " +
+                str(round(drivetrain.temperature(PERCENT), 0)) +
+                " C",
+                x=20,
+                y=100
+            )
+
+            brain.screen.print_at(
+                "Auton: " + auto_side + " " + auto_mode,
+                x=20,
+                y=130
+            )
+
+            brain.screen.print_at(
+                "Speed: " + str(drive_speed) + "%",
+                x=20,
+                y=160
+            )
+
+            MainMenuButton()
 
         LastGui = Gui
 
+
     if brain.screen.pressing():
+
         x = brain.screen.x_position()
         y = brain.screen.y_position()
 
+
         if Gui == "MainMenu":
-            #Sets the Gui based of where the scrren was clicked
-            if 1 <= x <= 121 and 1 <= y <= 61:
+
+            if 20 <= x <= 220 and 55 <= y <= 105:
+                Gui = "AutoSelector"
+
+            elif 260 <= x <= 460 and 55 <= y <= 105:
                 Gui = "SettingsMenu"
 
-            elif 1 <= x <= 100 and 178 <= y <= 278:
-                Gui = "AutoSelector"
-        else:
-            if 1 <= x <= 100 and 178 <= y <= 278:
+            elif 20 <= x <= 220 and 120 <= y <= 170:
+                Gui = "FieldMap"
+
+            elif 260 <= x <= 460 and 120 <= y <= 170:
+                Gui = "InfoMenu"
+
+
+        elif Gui == "SettingsMenu":
+
+            if 15 <= x <= 115 and 195 <= y <= 225:
                 Gui = "MainMenu"
 
-        #Detects the button Press for the AutoSelector
-        if Gui == "AutoSelector":
-            pass
+            elif 20 <= x <= 120 and 80 <= y <= 115:
+                drive_speed = 50
+                LastGui = ""
+
+            elif 135 <= x <= 235 and 80 <= y <= 115:
+                drive_speed = 75
+                LastGui = ""
+
+            elif 250 <= x <= 350 and 80 <= y <= 115:
+                drive_speed = 100
+                LastGui = ""
+
+            elif 20 <= x <= 170 and 130 <= y <= 165:
+                drive_reverse = not drive_reverse
+                LastGui = ""
+
+            elif 190 <= x <= 340 and 130 <= y <= 165:
+                controller_1.rumble(".")
+                
+
+        elif Gui == "AutoSelector":
+
+            if 15 <= x <= 115 and 195 <= y <= 225:
+                Gui = "MainMenu"
+
+            elif 20 <= x <= 220 and 55 <= y <= 105:
+                auto_side = "Blue"
+                LastGui = ""
+
+            elif 260 <= x <= 460 and 55 <= y <= 105:
+                auto_side = "Red"
+                LastGui = ""
+
+
+        elif Gui == "FieldMap":
+
+            if 15 <= x <= 115 and 195 <= y <= 225:
+                Gui = "MainMenu"
+            
+
+
+        elif Gui == "InfoMenu":
+
+            if 15 <= x <= 115 and 195 <= y <= 225:
+                Gui = "MainMenu"
+
+
         wait(150, MSEC)
+
     wait(10, MSEC)
     
-   
+    #antiTip
+    current_yaw = Internal_Sensor.orientation(OrientationType.PITCH, DEGREES)
+    target_yaw = 0
+    not_yaw = target_yaw - current_yaw
+    speed = not_yaw * 0.5
+        
+    if not_yaw < -5:
+        left_drive_smart.spin(REVERSE, speed, PERCENT)
+        right_drive_smart.spin(REVERSE, speed, PERCENT)
+    elif not_yaw > 5:
+        left_drive_smart.spin(FORWARD, speed, PERCENT)
+        right_drive_smart.spin(FORWARD, speed, PERCENT)
+    else:
+        left_drive_smart.stop()
+        right_drive_smart.stop()
+            
+    wait(20, MSEC)
+
 controller_1.buttonA.pressed(AutoAlign)
 
-
-
-
-
 #Game Stuff
+
 def pre_autonomous():
     controller_1.buttonA.pressed(AutoAlign)
 pre_autonomous()
+
 
 def autonmous():
     pass
@@ -375,6 +563,9 @@ def autonmous():
 autonmous()
  
 def driver_control(): 
+
+   
+
     controller_1.buttonA.pressed(AutoAlign)
 
 driver_control()
